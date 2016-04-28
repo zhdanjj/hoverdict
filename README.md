@@ -1,1 +1,1 @@
-Simple chrome extension for translating words under cursor.
+Simple chrome extension for translating words under the cursor.
