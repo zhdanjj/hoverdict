@@ -2,7 +2,7 @@
   "name": "HoverDict",
   "version": "0.1",
   "manifest_version": 2,
-  "description": "Translates words under cursor.",
+  "description": "Translates words under cursor when press key.",
   "icons": {
     "128": "img/icon-128.png",
     "48": "img/icon-48.png",
