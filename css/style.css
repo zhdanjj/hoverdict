@@ -1,0 +1,41 @@
+#hodi-box {
+    padding: 0 7px !important;
+    border: 1px solid #aaa;
+    background-color: #f7f7f7;
+    color: black;
+    position: absolute;
+    z-index: 10000;
+    width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+#hodi-word {
+    font-weight: 100;
+}
+
+#hodi-line {
+    height: 1px;
+    background-color: #aaa;
+    border: none;
+    border-bottom: 10px;
+}
+
+#hodi-translation {
+    font-weight: 100;
+}
+
+#hodi-preloader {
+    width: 48px;
+    height: 48px;
+    margin: 10px auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.hodi-pos {
+    font-size: 10px;
+    font-weight: 400;
+}
