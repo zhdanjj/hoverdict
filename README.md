@@ -1,1 +1,1 @@
-Something should be here
+Chrome extension for translating words under cursor.
