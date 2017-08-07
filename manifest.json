@@ -2,7 +2,7 @@
   "name": "HoverDict",
   "version": "0.1",
   "manifest_version": 2,
-  "description": "Translates words under cursor when press key.",
+  "description": "Translates word under cursor or selected text",
   "icons": {
     "128": "img/icon-128.png",
     "48": "img/icon-48.png",
@@ -10,9 +10,11 @@
   },
   "background": {
     "persistent": true,
-    "scripts": [
-      "js/bg.js"
-    ]
+    "scripts": ["js/bg.js"]
+  },
+  "options_ui": {
+    "page": "html/options.html",
+    "chrome_style": true
   },
   "web_accessible_resources": [
     "img/preloader.gif"
@@ -24,10 +26,4 @@
       "css": ["css/style.css"],
       "run_at": "document_start"
     }
-  ],
-  "page_action": {
-    "default_title": "HoverDict",
-    "default_icon": "img/icon-128.png",
-    "default_popup": "html/settings.html"
-  }
-}
+  ]}
