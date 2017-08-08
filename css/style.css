@@ -14,6 +14,7 @@
     opacity: 0;
     transform: translateY(30px);
     transition: opacity .3s, transform .1s, visibility .3s;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
 }
 #hodi-box.visible {
     visibility: visible;

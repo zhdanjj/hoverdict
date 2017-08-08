@@ -62,8 +62,8 @@ var popup = {
       'url("' + chrome.extension.getURL('img/preloader.gif') + '")';
     this.translations = document.getElementById('hodi-translations');
 
-    window.addEventListener('scroll', this.onWindowScroll.bind(this))
-    document.addEventListener('click', this.onDocumentClick.bind(this))
+    window.addEventListener('scroll', this._onWindowScroll.bind(this))
+    document.addEventListener('click', this._onDocumentClick.bind(this))
 
   },
   hide: function () {
@@ -71,7 +71,8 @@ var popup = {
     return this
   },
   show: function (x, y) {
-    this.box.style.left = x + 10 + 'px';
+    var offsetX = this._getOverflowOffsetX(x)
+    this.box.style.left = x + 10 - (offsetX > 0 ? offsetX + 40 : 0) + 'px';
     this.box.style.top = y + 10 + window.pageYOffset + 'px';
     this.box.classList.add('visible')
     return this
@@ -85,14 +86,6 @@ var popup = {
     this.translations.appendChild(markup)
     return this
   },
-  onWindowScroll: function () {
-    this.hide()
-  },
-  onDocumentClick: function () {
-    if (event.target !== this.box || !this.box.contains(event.target)) {
-      this.hide()
-    }
-  },
   enablePreloader: function () {
     this.preloader.style.display = 'block'
     this.translations.style.display = 'none'
@@ -102,7 +95,18 @@ var popup = {
     this.preloader.style.display = 'none'
     this.translations.style.display = 'block'
     return this
-  }
+  },
+  _onWindowScroll: function () {
+    this.hide()
+  },
+  _onDocumentClick: function (event) {
+    if (event.target !== this.box || !this.box.contains(event.target)) {
+      this.hide()
+    }
+  },
+  _getOverflowOffsetX: function (x) {
+    return this.box.offsetWidth + x - window.innerWidth
+  },
 }
 
 var selection = {
@@ -118,12 +122,13 @@ var selection = {
 }
 
 var api = {
-  getTranslationFor: function (word, callback) {
-    // Здесь будет отсылаться сообщение фоновому скрипту
+  getTranslationFor: function (word) {
+    return new Promise(function (resolve) {
+      chrome.runtime.sendMessage({word: word}, null, resolve)
+    })
 
-    chrome.runtime.sendMessage({word: word}, null, callback)
     // setTimeout(function () {
-    //   callback({defs: []})
+    //   callback({def: []})
     // }, 500)
   },
   createMarkupFrom: function (json) {
@@ -207,8 +212,14 @@ var app = {
   },
   onKeyDown: function (event) {
     // TODO: тип нажатой кнопки должен браться из настроек
-    if (event.key === 'Shift') {
-      this.handlePopup()
+    if (event.key === 'Control') {
+      var selection = getSelection().toString()
+
+      if (selection) {
+        this.handleSelection()
+      } else {
+        this.handlePopup()
+      }
     }
   },
   handlePopup: function () {
@@ -218,7 +229,9 @@ var app = {
       return
     }
 
-    wordHighlight.setRect(word.rect).show()
+    wordHighlight
+      .setRect(word.rect)
+      .show()
 
     popup
       .hide()
@@ -228,13 +241,26 @@ var app = {
 
     this.makeRequest(word.value)
   },
+  handleSelection: function () {
+    var range = getSelection().getRangeAt(0)
+    var word = range.toString()
+    var r = range.getBoundingClientRect()
+    popup
+      .hide()
+      .enablePreloader()
+      .setTitle(word)
+      .show(r.right, r.bottom)
+
+    this.makeRequest(word)
+  },
   makeRequest: function (word) {
-    api.getTranslationFor(word, function (json) {
-      var markup = api.createMarkupFrom(json)
-      popup
-        .setContent(markup)
-        .disablePreloader()
-    })
+    api.getTranslationFor(word)
+      .then(function (json) {
+          var markup = api.createMarkupFrom(json)
+          popup
+            .setContent(markup)
+            .disablePreloader()
+      })
   }
 }
 
