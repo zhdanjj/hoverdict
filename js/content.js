@@ -46,7 +46,7 @@ var wordHighlight = {
 }
 
 var popup = {
-  html: '<div id="hodi-word"></div><hr  id="hodi-line"><div id="hodi-preloader"></div><div id="hodi-translations"></div>',
+  html: '<div id="hodi-word"></div><hr id="hodi-line"><div id="hodi-preloader"></div><div id="hodi-translations"></div>',
   init: function () {
     this.box = document.createElement('div');
     this.box.id = 'hodi-box';
@@ -212,7 +212,7 @@ var app = {
   },
   onKeyDown: function (event) {
     // TODO: тип нажатой кнопки должен браться из настроек
-    if (event.key === 'Control') {
+    if (event.key === 'Alt') {
       var selection = getSelection().toString()
 
       if (selection) {
