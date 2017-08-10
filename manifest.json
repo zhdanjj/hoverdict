@@ -8,8 +8,14 @@
     "48": "img/icon-48.png",
     "16": "img/icon-16.png"
   },
+  "browser_action": {
+    "default_title": "HoverDict"
+  },
+  "permissions": [
+    "storage"
+  ],
   "background": {
-    "persistent": true,
+    "persistent": false,
     "scripts": ["js/bg.js"]
   },
   "options_ui": {

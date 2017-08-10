@@ -1,5 +1,23 @@
-function l(arg) {
-  console.log.apply(console, arguments)
+var config = {
+  init: function () {
+    chrome.runtime.sendMessage({
+      action: 'config.get'
+    }, null, function (response) {
+      config._merge(response.config)
+    })
+
+    chrome.runtime.onMessage.addListener(function (message) {
+      if (message && message.action === 'config.update') {
+        config._merge(message.options.config)
+      }
+    })
+  },
+  _merge: function (obj) {
+    for (let key of Object.keys(obj)) {
+      this[key] = obj[key]
+    }
+  },
+  maxCursorPositionOffset: 10
 }
 
 var cursor = {
@@ -64,6 +82,7 @@ var popup = {
 
     window.addEventListener('scroll', this._onWindowScroll.bind(this))
     document.addEventListener('click', this._onDocumentClick.bind(this))
+    document.addEventListener('mousemove', this._onMouseMove.bind(this))
 
   },
   hide: function () {
@@ -75,6 +94,10 @@ var popup = {
     this.box.style.left = x + 10 - (offsetX > 0 ? offsetX + 40 : 0) + 'px';
     this.box.style.top = y + 10 + window.pageYOffset + 'px';
     this.box.classList.add('visible')
+
+    this._x = parseInt(this.box.style.left)
+    this._y = parseInt(this.box.style.top)
+
     return this
   },
   setTitle: function (word) {
@@ -96,17 +119,33 @@ var popup = {
     this.translations.style.display = 'block'
     return this
   },
+  _onMouseMove: function () {
+
+    // TODO: Probably it's better to not attach this listener at all when this setting is off
+    if (!config.hide_popup_when_cursor_leaves) {
+      return
+    }
+
+    var offsetX = Math.abs(cursor.x - this._x)
+    var offsetY = Math.abs(cursor.y - this._y)
+
+    if (Math.max(offsetX, offsetY) > config.maxCursorPositionOffset) {
+      this.hide()
+    }
+  },
   _onWindowScroll: function () {
     this.hide()
   },
   _onDocumentClick: function (event) {
-    if (event.target !== this.box || !this.box.contains(event.target)) {
+    if (event.target !== this.box && !this.box.contains(event.target)) {
       this.hide()
     }
   },
   _getOverflowOffsetX: function (x) {
     return this.box.offsetWidth + x - window.innerWidth
   },
+  _x: 0,
+  _y: 0
 }
 
 var selection = {
@@ -117,34 +156,41 @@ var selection = {
   onMouseUp: function () {
     var text = getSelection().toString()
 
-    this.isTextSelected = text.length > 0 ? true : false
+    this.isTextSelected = text.length > 0
   }
 }
 
 var api = {
   getTranslationFor: function (word) {
     return new Promise(function (resolve) {
-      chrome.runtime.sendMessage({word: word}, null, resolve)
+      chrome.runtime.sendMessage({
+        action: 'translate.get',
+        options: {
+          word: word
+        }
+      }, null, resolve)
     })
-
-    // setTimeout(function () {
-    //   callback({def: []})
-    // }, 500)
   },
   createMarkupFrom: function (json) {
-    //структура описана здесь
-    //https://tech.yandex.ru/dictionary/doc/dg/reference/lookup-docpage/
+    // Structure is described here
+    // https://tech.yandex.ru/dictionary/doc/dg/reference/lookup-docpage/
 
     var markup = document.createElement('div')
 
     var defs = json['def'];
     for (var i = 0; i < defs.length; i++) {
       var def = document.createElement('div');
+
       var trs = [];
       for (var j = 0; j < defs[i]['tr'].length; j++) {
         trs.push(defs[i]['tr'][j]['text']);
       }
       def.innerText = trs.join(', ');
+
+      var ts = document.createElement('span')
+      ts.className = 'hodi-ts'
+      ts.textContent = ' [' + defs[i].ts + '] '
+      def.appendChild(ts)
 
       var pos = document.createElement('span');
       pos.className = 'hodi-pos';
@@ -169,6 +215,7 @@ var app = {
     wordHighlight.init()
     popup.init()
     selection.init()
+    config.init()
 
     document.addEventListener('keydown', this.onKeyDown.bind(this))
   },
@@ -211,8 +258,7 @@ var app = {
     }
   },
   onKeyDown: function (event) {
-    // TODO: тип нажатой кнопки должен браться из настроек
-    if (event.key === 'Alt') {
+    if (event.key === config.invokeKey) {
       var selection = getSelection().toString()
 
       if (selection) {

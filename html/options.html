@@ -23,18 +23,23 @@
   
 <h1>Settings</h1>
 
-<div>
-    <label for="hover_button">Button to show translation dialog.</label>
-    <select name="hover_button" id="hover_button">
-        <option value="ctrl">Ctrl</option>
-        <option value="shift">Shift</option>
-    </select>
-</div>
+<form action="#" id="config">
+    <p>
+        <label for="invokeKey">Button to show translation dialog.</label>
+        <select name="invokeKey" id="invokeKey">
+            <option value="Control">Control</option>
+            <option value="Shift">Shift</option>
+            <option value="Alt">Alt</option>
+        </select>
+    </p>
 
-<div>
-    <label for="leave">Hide popup when cursor leaves word</label>
-    <input type="checkbox" id="leave">
-</div>
+    <p>
+        <label for="hide_popup_when_cursor_leaves">Hide popup when cursor leaves word</label>
+        <input type="checkbox" id="hide_popup_when_cursor_leaves" name="hide_popup_when_cursor_leaves">
+    </p>
+</form>
+
+<script src="options.js"></script>
 
 </body>
 </html>

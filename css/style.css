@@ -59,3 +59,7 @@
   z-index: 8888;
   pointer-events: none;
 }
+
+.hodi-ts {
+    font-family: monospace;
+}
