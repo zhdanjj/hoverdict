@@ -1,3 +1,13 @@
+#hodi-box,
+#hodi-box * {
+    all: initial;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+}
+
+#hodi-box div {
+    display: block;
+}
+
 #hodi-box {
     box-shadow: rgba(0, 0, 0, 0.3) 17px 18px 84px;
     padding: 7px !important;
@@ -14,7 +24,6 @@
     opacity: 0;
     transform: translateY(30px);
     transition: opacity .3s, transform .1s, visibility .3s;
-    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
 }
 #hodi-box.visible {
     visibility: visible;
@@ -24,13 +33,6 @@
 
 #hodi-word {
     font-weight: 700;
-}
-
-#hodi-line {
-    height: 1px;
-    background-color: #aaa;
-    border: none;
-    border-bottom: 10px;
 }
 
 #hodi-translation {
@@ -46,7 +48,7 @@
     background-position: center center;
 }
 
-.hodi-pos {
+#hodi-box .hodi-pos {
     font-size: 10px;
     font-weight: 400;
 }
@@ -60,6 +62,6 @@
   pointer-events: none;
 }
 
-.hodi-ts {
+#hodi-box .hodi-ts {
     font-family: monospace;
 }

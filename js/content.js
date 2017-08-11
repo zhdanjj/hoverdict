@@ -17,7 +17,7 @@ var config = {
       this[key] = obj[key]
     }
   },
-  maxCursorPositionOffset: 10
+  maxCursorPositionOffset: 50
 }
 
 var cursor = {
@@ -65,6 +65,7 @@ var wordHighlight = {
 
 var popup = {
   html: '<div id="hodi-word"></div><hr id="hodi-line"><div id="hodi-preloader"></div><div id="hodi-translations"></div>',
+  visibleCn: 'visible',
   init: function () {
     this.box = document.createElement('div');
     this.box.id = 'hodi-box';
@@ -86,19 +87,22 @@ var popup = {
 
   },
   hide: function () {
-    this.box.classList.remove('visible')
+    this.box.classList.remove(this.visibleCn)
     return this
   },
   show: function (x, y) {
     var offsetX = this._getOverflowOffsetX(x)
     this.box.style.left = x + 10 - (offsetX > 0 ? offsetX + 40 : 0) + 'px';
     this.box.style.top = y + 10 + window.pageYOffset + 'px';
-    this.box.classList.add('visible')
+    this.box.classList.add(this.visibleCn)
 
     this._x = parseInt(this.box.style.left)
     this._y = parseInt(this.box.style.top)
 
     return this
+  },
+  isVisible: function () {
+    return this.box.classList.contains(this.visibleCn)
   },
   setTitle: function (word) {
     this.word.textContent = word.toLowerCase()
@@ -126,8 +130,8 @@ var popup = {
       return
     }
 
-    var offsetX = Math.abs(cursor.x - this._x)
-    var offsetY = Math.abs(cursor.y - this._y)
+    var offsetX = Math.abs(scrollX + cursor.x - this._x)
+    var offsetY = Math.abs(scrollY + cursor.y - this._y)
 
     if (Math.max(offsetX, offsetY) > config.maxCursorPositionOffset) {
       this.hide()
@@ -217,7 +221,7 @@ var app = {
     selection.init()
     config.init()
 
-    document.addEventListener('keydown', this.onKeyDown.bind(this))
+    document.addEventListener('mousemove', this.onMouseMove.bind(this))
   },
   getWordUnderCursor: function () {
     var el = document.elementFromPoint(cursor.x, cursor.y)
@@ -257,8 +261,12 @@ var app = {
       }
     }
   },
-  onKeyDown: function (event) {
-    if (event.key === config.invokeKey) {
+  onMouseMove: function (event) {
+    if (popup.isVisible()) {
+      return
+    }
+
+    if (event.shiftKey === true) {
       var selection = getSelection().toString()
 
       if (selection) {
