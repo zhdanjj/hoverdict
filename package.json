@@ -1,0 +1,23 @@
+{
+  "name": "hoverdict",
+  "version": "1.0.0",
+  "description": "Simple chrome extension that translates words under cursor.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhdanjj/hoverdict.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhdanjj/hoverdict/issues"
+  },
+  "homepage": "https://github.com/zhdanjj/hoverdict#readme",
+  "devDependencies": {
+    "@types/chrome": "0.0.48"
+  }
+}

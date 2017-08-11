@@ -48,7 +48,7 @@ var wordHighlight = {
     this.element.style.display = 'none'
     return this
   },
-  setRect: function (rect) {
+  setPositionAndSize: function (rect) {
     this.element.style.top = rect.top + 'px'
     this.element.style.left = rect.left + 'px'
     this.element.style.width = rect.width + 'px'
@@ -284,7 +284,7 @@ var app = {
     }
 
     wordHighlight
-      .setRect(word.rect)
+      .setPositionAndSize(word.rect)
       .show()
 
     popup
