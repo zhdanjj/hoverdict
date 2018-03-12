@@ -15,8 +15,11 @@
     "storage"
   ],
   "background": {
-    "persistent": false,
-    "scripts": ["js/bg.js"]
+    "persistent": true,
+    "scripts": [
+      "js/bg.js",
+      "hot-reload.js"
+    ]
   },
   "options_ui": {
     "page": "html/options.html",

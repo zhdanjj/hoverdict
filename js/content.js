@@ -88,6 +88,7 @@ var popup = {
   },
   hide: function () {
     this.box.classList.remove(this.visibleCn)
+    wordHighlight.hide()
     return this
   },
   show: function (x, y) {
